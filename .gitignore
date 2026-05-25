@@ -1,0 +1,107 @@
+# ==============================================
+# .gitignore - Farm App (CodeIgniter + PHP)
+# ==============================================
+
+# -----------------------------------------------
+# Environment & Sensitive Config
+# -----------------------------------------------
+.env
+.env.*
+!.env.example
+*.env
+
+# -----------------------------------------------
+# PHP / Composer
+# -----------------------------------------------
+/farm/vendor/
+composer.phar
+
+# -----------------------------------------------
+# CodeIgniter Specific
+# -----------------------------------------------
+/farm/application/logs/
+!/farm/application/logs/index.html
+
+/farm/application/cache/
+!/farm/application/cache/index.html
+
+/farm/application/config/development/
+/farm/application/config/production/
+
+# -----------------------------------------------
+# Database / SQL dumps (jangan commit data lokal)
+# -----------------------------------------------
+*.sql.gz
+*.dump
+
+# -----------------------------------------------
+# OS Generated Files
+# -----------------------------------------------
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+
+# -----------------------------------------------
+# IDE & Editor Files
+# -----------------------------------------------
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains (PhpStorm, IntelliJ, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# NetBeans
+nbproject/
+
+# -----------------------------------------------
+# Node.js (jika ada tooling frontend)
+# -----------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-error.log
+.pnp
+.pnp.js
+
+# -----------------------------------------------
+# Build & Temp Files
+# -----------------------------------------------
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# -----------------------------------------------
+# Upload / Storage (data user, bukan kode)
+# -----------------------------------------------
+/farm/assets/uploads/*
+!/farm/assets/uploads/.gitkeep
+
+# -----------------------------------------------
+# Testing
+# -----------------------------------------------
+.phpunit.result.cache
+coverage/
