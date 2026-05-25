@@ -19,10 +19,10 @@ $db['default'] = array(
     'char_set' => 'utf8',
     'dbcollat' => 'utf8_general_ci',
     'swap_pre' => '',
-    'encrypt' => FALSE,
+    'encrypt'  => TRUE,   // Aiven MySQL requires SSL
     'compress' => FALSE,
     'stricton' => FALSE,
     'failover' => array(),
     'save_queries' => TRUE,
-    'port' => getenv('DB_PORT')
+    'port' => (int)(getenv('DB_PORT') ?: 3306)
 );
