@@ -17,13 +17,12 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install mysqli pdo pdo_mysql zip
 
-# Fix "More than one MPM loaded":
-# Hapus langsung symlink mpm_event & mpm_worker, paksa pakai mpm_prefork
-RUN rm -f /etc/apache2/mods-enabled/mpm_event.conf \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.load \
-    && rm -f /etc/apache2/mods-enabled/mpm_worker.conf \
-    && rm -f /etc/apache2/mods-enabled/mpm_worker.load \
-    && a2enmod mpm_prefork rewrite
+# Fix "More than one MPM loaded" - hapus SEMUA mpm symlinks, buat ulang hanya prefork
+RUN rm -f /etc/apache2/mods-enabled/mpm_*.conf \
+    && rm -f /etc/apache2/mods-enabled/mpm_*.load \
+    && ln -s /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf \
+    && ln -s /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
+    && a2enmod rewrite
 
 # AllowOverride All agar .htaccess CI3 terbaca
 RUN printf '<Directory /var/www/html>\n\tAllowOverride All\n</Directory>\n' \
