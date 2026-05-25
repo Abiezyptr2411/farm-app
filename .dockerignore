@@ -1,0 +1,26 @@
+# Git
+.git
+.gitignore
+
+# CI3 runtime (akan dibuat ulang saat runtime)
+application/cache/*
+application/logs/*
+!application/cache/index.html
+!application/logs/index.html
+
+# Composer dev dependencies & lock
+vendor/
+composer.lock
+
+# Docker
+Dockerfile
+.dockerignore
+
+# IDE & OS
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Node
+node_modules/

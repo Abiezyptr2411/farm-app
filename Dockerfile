@@ -20,8 +20,7 @@ RUN printf '<Directory /var/www/html>\n\tAllowOverride All\n</Directory>\n' \
     >> /etc/apache2/apache2.conf \
     && echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# 🔥 INI YANG DIUBAH
-COPY farm/ /var/www/html/
+COPY . /var/www/html/
 
 WORKDIR /var/www/html
 
