@@ -1,45 +1,36 @@
-# =====================================================
-# Dockerfile - CodeIgniter 3 (PHP 8.1 + Apache)
-# VERSI MINIMAL - untuk Railway deployment
-# =====================================================
-
 FROM php:8.1-apache
 
-# Install system dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libzip-dev \
     zip \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
+    unzip
 
-# Install PHP extensions
+# PHP extensions
 RUN docker-php-ext-install mysqli pdo pdo_mysql zip
 
-# Fix "More than one MPM loaded" - hapus SEMUA mpm symlinks, buat ulang hanya prefork
-RUN rm -f /etc/apache2/mods-enabled/mpm_*.conf \
-    && rm -f /etc/apache2/mods-enabled/mpm_*.load \
-    && ln -s /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf \
-    && ln -s /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
-    && a2enmod rewrite
+# DISABLE ALL MPM FIRST (INI FIX UTAMA)
+RUN a2dismod mpm_event || true
+RUN a2dismod mpm_worker || true
+RUN a2dismod mpm_prefork || true
 
-# AllowOverride All agar .htaccess CI3 terbaca
+# ENABLE ONLY PREFORK
+RUN a2enmod mpm_prefork
+RUN a2enmod rewrite
+
+# Apache config
 RUN printf '<Directory /var/www/html>\n\tAllowOverride All\n</Directory>\n' \
     >> /etc/apache2/apache2.conf \
-    && echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+    && echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Copy CI3 app ke web root
-# (farm/ = subfolder berisi index.php, application/, system/)
-COPY farm/ /var/www/html/
+# Copy project
+COPY . /var/www/html/
 
 WORKDIR /var/www/html
 
-# Set permissions
-RUN mkdir -p application/logs application/cache \
-    && chmod -R 777 application/logs application/cache \
-    && chown -R www-data:www-data /var/www/html
+# Permission CI3
+RUN chmod -R 777 application/cache application/logs
 
 EXPOSE 80
-
-CMD ["apache2-foreground"]
