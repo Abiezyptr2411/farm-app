@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql zip
 
-# FIX MPM: hapus semua MPM symlinks satu per satu, buat manual untuk prefork saja
+# FIX MPM build-time: hapus semua MPM symlinks, enable hanya prefork
 RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
           /etc/apache2/mods-enabled/mpm_event.conf \
           /etc/apache2/mods-enabled/mpm_worker.load \
@@ -34,3 +34,6 @@ RUN mkdir -p application/cache application/logs \
     && chmod -R 777 application/cache application/logs
 
 EXPOSE 80
+
+# FIX MPM runtime: hapus event/worker sebelum Apache start (jaga-jaga Railway override config)
+CMD ["bash", "-c", "rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf && apache2-foreground"]
