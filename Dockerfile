@@ -10,10 +10,17 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql zip
 
-# FIX MPM: hapus semua symlink mpm_* secara langsung, lalu aktifkan hanya prefork
-RUN find /etc/apache2/mods-enabled/ -name 'mpm_*' -delete \
-    && a2enmod mpm_prefork \
-    && a2enmod rewrite
+# FIX MPM: hapus semua MPM symlinks satu per satu, buat manual untuk prefork saja
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
+          /etc/apache2/mods-enabled/mpm_event.conf \
+          /etc/apache2/mods-enabled/mpm_worker.load \
+          /etc/apache2/mods-enabled/mpm_worker.conf \
+          /etc/apache2/mods-enabled/mpm_prefork.load \
+          /etc/apache2/mods-enabled/mpm_prefork.conf \
+    && ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
+    && ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf \
+    && a2enmod rewrite \
+    && apache2ctl configtest
 
 RUN printf '<Directory /var/www/html>\n\tAllowOverride All\n</Directory>\n' \
     >> /etc/apache2/apache2.conf \
